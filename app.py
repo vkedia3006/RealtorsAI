@@ -1,5 +1,5 @@
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 
@@ -42,7 +42,11 @@ async def facebook_webhook(data: WebhookData):
     return {"status": "received"}
 
 @app.get("/webhook")
-async def verify_webhook(hub_mode: str, hub_challenge: int, hub_verify_token: str):
+async def verify_webhook(
+    hub_mode: str = Query(..., alias="hub.mode"),
+    hub_challenge: int = Query(..., alias="hub.challenge"),
+    hub_verify_token: str = Query(..., alias="hub.verify_token")
+):
     """Facebook Webhook Verification."""
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
         """Facebook Webhook Verification with ngrok header bypass."""
