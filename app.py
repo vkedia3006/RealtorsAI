@@ -47,8 +47,6 @@ async def verify_webhook(hub_mode: str, hub_challenge: int, hub_verify_token: st
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
         """Facebook Webhook Verification with ngrok header bypass."""
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
-        response = JSONResponse(content=hub_challenge)
-        response.headers["ngrok-skip-browser-warning"] = "true"  # Bypass ngrok warning
-        return response
+        return JSONResponse(content=hub_challenge)
 
     return JSONResponse(content={"error": "Invalid token"}, status_code=403)
