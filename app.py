@@ -16,7 +16,8 @@ class WebhookData(BaseModel):
     
 @app.get("/api/test")
 async def test():
- return "Hello World!"
+    print("HELLO WORLD")
+    return "Hello World!"
 
 @app.get("/callback")
 async def facebook_callback(code: str):
