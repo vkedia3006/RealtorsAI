@@ -13,6 +13,10 @@ VERIFY_TOKEN = "mysecrettoken123"
 class WebhookData(BaseModel):
     object: str
     entry: list
+    
+@app.get("/api/test")
+async def test():
+ return "Hello World!"
 
 @app.get("/callback")
 async def facebook_callback(code: str):
