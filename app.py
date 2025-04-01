@@ -1,5 +1,5 @@
 import requests
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, status
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 
@@ -35,13 +35,13 @@ async def facebook_callback(code: str):
 
     return data if "access_token" in data else {"error": "Failed to get access token", "details": data}
 
-@app.post("/webhook")
+@app.post("/webhooks")
 async def facebook_webhook(data: WebhookData):
     """Handles incoming webhook events from Facebook."""
     print("Received webhook:", data.dict())
     return {"status": "received"}
 
-@app.get("/webhook")
+@app.get("/webhooks")
 async def verify_webhook(
     hub_mode: str = Query(..., alias="hub.mode"),
     hub_challenge: int = Query(..., alias="hub.challenge"),
@@ -49,8 +49,6 @@ async def verify_webhook(
 ):
     """Facebook Webhook Verification."""
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
-        """Facebook Webhook Verification with ngrok header bypass."""
-    if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
-        return JSONResponse(content=hub_challenge)
+        return JSONResponse(content={"hub.challenge": hub_challenge}, status_code=status.HTTP_200_OK)
 
-    return JSONResponse(content={"error": "Invalid token"}, status_code=403)
+    return JSONResponse(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
