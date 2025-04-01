@@ -65,3 +65,15 @@ async def verify_webhook(
         return JSONResponse(content={"hub.challenge": hub_challenge}, status_code=status.HTTP_200_OK)
 
     return JSONResponse(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
+
+@app.get("/webhook")
+async def verify_webhook(
+    hub_mode: str = Query(..., alias="hub.mode"),
+    hub_challenge: int = Query(..., alias="hub.challenge"),
+    hub_verify_token: str = Query(..., alias="hub.verify_token")
+):
+    """Facebook Webhook Verification."""
+    if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
+        return JSONResponse(content={"hub.challenge": hub_challenge}, status_code=status.HTTP_200_OK)
+
+    return JSONResponse(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
