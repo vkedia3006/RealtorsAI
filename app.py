@@ -1,7 +1,7 @@
 import requests
 from fastapi import FastAPI, Query, status
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -62,9 +62,9 @@ async def verify_webhook(
 ):
     """Facebook Webhook Verification."""
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
-        return JSONResponse(content={"hub.challenge": hub_challenge}, status_code=status.HTTP_200_OK)
+        return Response(content=hub_challenge, status_code=status.HTTP_200_OK)
 
-    return JSONResponse(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
+    return Response(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
 
 @app.get("/webhook")
 async def verify_webhook(
@@ -74,6 +74,6 @@ async def verify_webhook(
 ):
     """Facebook Webhook Verification."""
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
-        return JSONResponse(content={"hub.challenge": hub_challenge}, status_code=status.HTTP_200_OK)
+        return Response(content=hub_challenge, status_code=status.HTTP_200_OK)
 
-    return JSONResponse(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
+    return Response(content={"error": "Invalid token"}, status_code=status.HTTP_403_FORBIDDEN)
